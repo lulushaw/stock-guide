@@ -366,22 +366,25 @@ export default function DataQuery() {
                   {realtimeResult && (
                     <div className="mt-4 space-y-4">
                       <div className="p-4 rounded-lg bg-muted/50">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="text-2xl font-bold text-primary">{realtimeResult.symbol}</h3>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              更新时间: {new Date(realtimeResult.fetched_at).toLocaleString('zh-CN')}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className={`text-3xl font-bold ${realtimeResult.change >= 0 ? 'text-stock-rise' : 'text-stock-fall'}`}>
-                              ${realtimeResult.price.toFixed(2)}
-                            </div>
-                            <div className={`text-sm ${realtimeResult.change >= 0 ? 'text-stock-rise' : 'text-stock-fall'}`}>
-                              {realtimeResult.change >= 0 ? '+' : ''}{realtimeResult.change.toFixed(2)} ({realtimeResult.change >= 0 ? '+' : ''}{realtimeResult.changePercent.toFixed(2)}%)
-                            </div>
-                          </div>
-                        </div>
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-2xl font-bold text-primary">{realtimeResult.symbol}</h3>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      更新时间: {new Date(realtimeResult.fetched_at).toLocaleString('zh-CN')}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      数据来源: {realtimeResult.dataSource || 'Supabase API'}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`text-3xl font-bold ${realtimeResult.change >= 0 ? 'text-stock-rise' : 'text-stock-fall'}`}>
+                      ${realtimeResult.price.toFixed(2)}
+                    </div>
+                    <div className={`text-sm ${realtimeResult.change >= 0 ? 'text-stock-rise' : 'text-stock-fall'}`}>
+                      {realtimeResult.change >= 0 ? '+' : ''}{realtimeResult.change.toFixed(2)} ({realtimeResult.change >= 0 ? '+' : ''}{realtimeResult.changePercent.toFixed(2)}%)
+                    </div>
+                  </div>
+                </div>
                         
                         <div className="grid grid-cols-4 gap-3">
                           <div className="p-2 rounded bg-background">

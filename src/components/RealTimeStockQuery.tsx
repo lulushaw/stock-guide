@@ -169,6 +169,9 @@ export function RealTimeStockQuery() {
                   <div className="text-xs text-muted-foreground mt-1">
                     更新时间: {new Date(result.fetched_at).toLocaleString('zh-CN')}
                   </div>
+                  <div className="text-xs text-muted-foreground">
+                    数据来源: {result.dataSource || 'Supabase API'}
+                  </div>
                 </div>
                 <div className="text-right">
                   <div className={`text-3xl font-bold ${result.change >= 0 ? 'text-stock-rise' : 'text-stock-fall'}`}>
