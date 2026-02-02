@@ -1,0 +1,18 @@
+
+-- 更新触发器函数：如果手机号是 13800000000 则设为管理员
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+DECLARE
+  user_phone TEXT;
+BEGIN
+  user_phone := COALESCE(NEW.raw_user_meta_data->>'phone', SPLIT_PART(NEW.email, '@', 1));
+  
+  INSERT INTO public.profiles (id, phone, is_admin)
+  VALUES (
+    NEW.id,
+    user_phone,
+    user_phone = '13800000000'  -- 如果手机号是 13800000000 则自动设为管理员
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

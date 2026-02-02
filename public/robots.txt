@@ -1,0 +1,38 @@
+# 股票智投 - robots.txt
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Sogou web spider
+Allow: /
+Crawl-delay: 2
+
+User-agent: 360Spider
+Allow: /
+Crawl-delay: 2
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: *
+Allow: /
+Crawl-delay: 2
+
+# 禁止爬取的路径
+Disallow: /admin
+Disallow: /api/
+
+# 站点地图
+Sitemap: /sitemap.xml
