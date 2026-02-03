@@ -48,17 +48,31 @@ export function RealTimeStockQuery() {
     try {
       const stockCode = searchCompanyByInput(trimmedSymbol);
 
+      console.log('查询股票代码:', stockCode);
+      console.log('原始输入:', trimmedSymbol);
+
       const response = await fetch(
         `https://lahnoanbjydllvrvbncj.supabase.co/functions/v1/fetch-stock-data?symbol=${stockCode}`
       );
       const data = await response.json();
 
+      console.log('API 响应状态:', response.status);
+      console.log('API 返回数据:', data);
+
       if (response.ok) {
-        setResult(data);
+        if (data && data.symbol) {
+          setResult({
+            ...data,
+            dataSource: 'Supabase API'
+          });
+        } else {
+          setError('API 返回数据格式不正确，请稍后重试');
+        }
       } else {
-        setError(data.error || '查询失败，请稍后重试');
+        setError(data?.error || '查询失败，请稍后重试');
       }
     } catch (err) {
+      console.error('网络错误:', err);
       setError('网络错误: ' + (err instanceof Error ? err.message : '未知错误'));
     } finally {
       setLoading(false);

@@ -70,17 +70,34 @@ export default function DataQuery() {
       const stockCode = searchCompanyByInput(trimmedSymbol);
       analytics.trackDataQuery('realtime_stock', stockCode);
 
+      console.log('查询股票代码:', stockCode);
+      console.log('原始输入:', trimmedSymbol);
+
       const response = await fetch(
         `https://lahnoanbjydllvrvbncj.supabase.co/functions/v1/fetch-stock-data?symbol=${stockCode}`
       );
       const data = await response.json();
 
+      console.log('API 响应状态:', response.status);
+      console.log('API 返回数据:', data);
+
       if (response.ok) {
-        setRealtimeResult(data);
+        console.log('API 返回数据:', data);
+        
+        if (data && data.symbol) {
+          setRealtimeResult({
+            ...data,
+            dataSource: 'Supabase API'
+          });
+        } else {
+          setRealtimeError(data?.error || 'API 返回数据格式不正确，请稍后重试');
+        }
       } else {
-        setRealtimeError(data.error || '查询失败，请稍后重试');
+        console.error('API 错误:', data);
+        setRealtimeError(data?.error || '查询失败，请稍后重试');
       }
     } catch (err) {
+      console.error('网络错误:', err);
       setRealtimeError('网络错误: ' + (err instanceof Error ? err.message : '未知错误'));
     } finally {
       setRealtimeLoading(false);
