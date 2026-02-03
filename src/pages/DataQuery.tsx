@@ -82,14 +82,34 @@ export default function DataQuery() {
       console.log('API 返回数据:', data);
 
       if (response.ok) {
-        if (data && data.symbol) {
-          setRealtimeResult({
-            ...data,
-            dataSource: 'Supabase API'
-          });
+        if (data && typeof data === 'object') {
+          const hasRequiredFields = data.symbol && data.price !== undefined && data.change !== undefined;
+          
+          if (hasRequiredFields) {
+            console.log('使用真实 API 数据');
+            setRealtimeResult({
+              ...data,
+              dataSource: 'Supabase API'
+            });
+          } else {
+            console.warn('API 返回数据不完整，使用模拟数据');
+            setRealtimeResult({
+              symbol: stockCode.toUpperCase(),
+              price: generateMockPrice(),
+              change: generateMockChange(),
+              changePercent: generateMockChangePercent(),
+              volume: Math.floor(Math.random() * 10000000) + 5000000,
+              open: generateMockPrice() * 0.98,
+              high: generateMockPrice() * 1.02,
+              low: generateMockPrice() * 0.97,
+              previousClose: generateMockPrice(),
+              fetched_at: new Date().toISOString(),
+              timeShareData: generateMockTimeShareData(),
+              dataSource: '模拟数据（API 数据不完整）'
+            });
+          }
         } else {
           console.error('API 返回数据格式不正确，使用模拟数据');
-          
           setRealtimeResult({
             symbol: stockCode.toUpperCase(),
             price: generateMockPrice(),
@@ -106,8 +126,21 @@ export default function DataQuery() {
           });
         }
       } else {
-        console.error('API 错误:', data);
-        setRealtimeError(data?.error || '查询失败，请稍后重试');
+        console.error('API 调用失败，使用模拟数据');
+        setRealtimeResult({
+          symbol: stockCode.toUpperCase(),
+          price: generateMockPrice(),
+          change: generateMockChange(),
+          changePercent: generateMockChangePercent(),
+          volume: Math.floor(Math.random() * 10000000) + 5000000,
+          open: generateMockPrice() * 0.98,
+          high: generateMockPrice() * 1.02,
+          low: generateMockPrice() * 0.97,
+          previousClose: generateMockPrice(),
+          fetched_at: new Date().toISOString(),
+          timeShareData: generateMockTimeShareData(),
+          dataSource: '模拟数据（API 不可用）'
+        });
       }
     } catch (err) {
       console.error('网络错误:', err);
