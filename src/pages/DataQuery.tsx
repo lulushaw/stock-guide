@@ -82,15 +82,28 @@ export default function DataQuery() {
       console.log('API 返回数据:', data);
 
       if (response.ok) {
-        console.log('API 返回数据:', data);
-        
         if (data && data.symbol) {
           setRealtimeResult({
             ...data,
             dataSource: 'Supabase API'
           });
         } else {
-          setRealtimeError(data?.error || 'API 返回数据格式不正确，请稍后重试');
+          console.error('API 返回数据格式不正确，使用模拟数据');
+          
+          setRealtimeResult({
+            symbol: stockCode.toUpperCase(),
+            price: generateMockPrice(),
+            change: generateMockChange(),
+            changePercent: generateMockChangePercent(),
+            volume: Math.floor(Math.random() * 10000000) + 5000000,
+            open: generateMockPrice() * 0.98,
+            high: generateMockPrice() * 1.02,
+            low: generateMockPrice() * 0.97,
+            previousClose: generateMockPrice(),
+            fetched_at: new Date().toISOString(),
+            timeShareData: generateMockTimeShareData(),
+            dataSource: '模拟数据（API 不可用）'
+          });
         }
       } else {
         console.error('API 错误:', data);
@@ -102,6 +115,41 @@ export default function DataQuery() {
     } finally {
       setRealtimeLoading(false);
     }
+  };
+
+  const generateMockPrice = (): number => {
+    const basePrice = 170 + Math.random() * 10;
+    return Math.round(basePrice * 100) / 100;
+  };
+
+  const generateMockChange = (): number => {
+    return (Math.random() - 0.5) * 5;
+  };
+
+  const generateMockChangePercent = (): number => {
+    return (Math.random() - 0.5) * 3;
+  };
+
+  const generateMockTimeShareData = () => {
+    const data = [];
+    const basePrice = 170 + Math.random() * 10;
+    const startTime = new Date();
+    startTime.setHours(9, 30, 0, 0);
+    
+    for (let i = 0; i < 20; i++) {
+      const time = new Date(startTime.getTime() + i * 30 * 60 * 1000);
+      const price = basePrice + (Math.random() - 0.5) * 5;
+      const avgPrice = basePrice + (Math.random() - 0.3) * 3;
+      
+      data.push({
+        time: `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`,
+        price: Math.round(price * 100) / 100,
+        avgPrice: Math.round(avgPrice * 100) / 100,
+        volume: Math.floor(Math.random() * 1000000) + 1000000
+      });
+    }
+    
+    return data;
   };
 
   const handleRealtimeQuery = () => {
